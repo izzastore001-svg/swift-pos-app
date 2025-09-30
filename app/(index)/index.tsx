@@ -1,181 +1,46 @@
-import React from "react";
-import { Stack, router } from "expo-router";
-import { FlatList, Pressable, StyleSheet, View, Text } from "react-native";
-// Components
-import { IconCircle } from "@/components/IconCircle";
-import { IconSymbol } from "@/components/IconSymbol";
-import { BodyScrollView } from "@/components/BodyScrollView";
-import { Button } from "@/components/button";
-// Constants & Hooks
-import { backgroundColors } from "@/constants/Colors";
 
-const ICON_COLOR = "#007AFF";
+import React, { useEffect } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import { router } from 'expo-router';
+import { useAuth } from '../../hooks/useAuth';
+import { colors } from '../../styles/commonStyles';
 
-export default function HomeScreen() {
+export default function IndexScreen() {
+  const { user, loading } = useAuth();
 
-  const modalDemos = [
-    {
-      title: "Standard Modal",
-      description: "Full screen modal presentation",
-      route: "/modal",
-      color: "#007AFF",
-    },
-    {
-      title: "Form Sheet",
-      description: "Bottom sheet with detents and grabber",
-      route: "/formsheet",
-      color: "#34C759",
-    },
-    {
-      title: "Transparent Modal",
-      description: "Overlay without obscuring background",
-      route: "/transparent-modal",
-      color: "#FF9500",
+  useEffect(() => {
+    if (!loading) {
+      if (user) {
+        router.replace('/(tabs)/dashboard');
+      } else {
+        router.replace('/(auth)/login');
+      }
     }
-  ];
-
-  const renderModalDemo = ({ item }: { item: typeof modalDemos[0] }) => (
-    <View style={styles.demoCard}>
-      <View style={[styles.demoIcon, { backgroundColor: item.color }]}>
-        <IconSymbol name="square.grid.3x3" color="white" size={24} />
-      </View>
-      <View style={styles.demoContent}>
-        <Text style={styles.demoTitle}>{item.title}</Text>
-        <Text style={styles.demoDescription}>{item.description}</Text>
-      </View>
-      <Button
-        variant="outline"
-        size="sm"
-        onPress={() => router.push(item.route as any)}
-      >
-        Try It
-      </Button>
-    </View>
-  );
-
-  const renderEmptyList = () => (
-    <BodyScrollView contentContainerStyle={styles.emptyStateContainer}>
-      <IconCircle
-        emoji=""
-        backgroundColor={
-          backgroundColors[Math.floor(Math.random() * backgroundColors.length)]
-        }
-      />
-    </BodyScrollView>
-  );
-
-  const renderHeaderRight = () => (
-    <Pressable
-      onPress={() => {console.log("plus")}}
-      style={styles.headerButtonContainer}
-    >
-      <IconSymbol name="plus" color={ICON_COLOR} />
-    </Pressable>
-  );
-
-  const renderHeaderLeft = () => (
-    <Pressable
-      onPress={() => {console.log("gear")}}
-      style={styles.headerButtonContainer}
-    >
-      <IconSymbol
-        name="gear"
-        color={ICON_COLOR}
-      />
-    </Pressable>
-  );
+  }, [user, loading]);
 
   return (
-    <>
-      <Stack.Screen
-        options={{
-          title: "Building the app...",
-          headerRight: renderHeaderRight,
-          headerLeft: renderHeaderLeft,
-        }}
-      />
-      <View style={styles.container}>
-        <FlatList
-          data={modalDemos}
-          renderItem={renderModalDemo}
-          keyExtractor={(item) => item.route}
-          contentContainerStyle={styles.listContainer}
-          contentInsetAdjustmentBehavior="automatic"
-          showsVerticalScrollIndicator={false}
-        />
-      </View>
-    </>
+    <View style={styles.container}>
+      <Text style={styles.loadingText}>🏪 POS System</Text>
+      <Text style={styles.subtitle}>Memuat aplikasi...</Text>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
-  },
-  headerSection: {
-    padding: 20,
-    paddingBottom: 16,
-    backgroundColor: 'white',
-    borderBottomWidth: 1,
-    borderBottomColor: '#e5e5e5',
-  },
-  headerTitle: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 8,
-  },
-  headerSubtitle: {
-    fontSize: 16,
-    color: '#666',
-    lineHeight: 22,
-  },
-  listContainer: {
-    paddingVertical: 16,
-    paddingHorizontal: 16,
-  },
-  demoCard: {
-    backgroundColor: 'white',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    flexDirection: 'row',
-    alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 2,
-  },
-  demoIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
     justifyContent: 'center',
     alignItems: 'center',
-    marginRight: 16,
+    backgroundColor: colors.background,
   },
-  demoContent: {
-    flex: 1,
+  loadingText: {
+    fontSize: 32,
+    fontWeight: 'bold',
+    color: colors.text,
+    marginBottom: 16,
   },
-  demoTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 4,
-  },
-  demoDescription: {
-    fontSize: 14,
-    color: '#666',
-    lineHeight: 18,
-  },
-  emptyStateContainer: {
-    alignItems: "center",
-    gap: 8,
-    paddingTop: 100,
-  },
-  headerButtonContainer: {
-    padding: 6, // Just enough padding around the 24px icon
+  subtitle: {
+    fontSize: 16,
+    color: colors.grey,
   },
 });
