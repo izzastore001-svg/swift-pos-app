@@ -16,6 +16,9 @@ import { SystemBars } from "react-native-edge-to-edge";
 import { useColorScheme } from "react-native";
 import { useAuth } from "../hooks/useAuth";
 
+// Prevent the splash screen from auto-hiding before asset loading is complete.
+SplashScreen.preventAutoHideAsync();
+
 export default function RootLayout() {
   const colorScheme = useColorScheme();
   const { user, loading } = useAuth();
@@ -31,14 +34,14 @@ export default function RootLayout() {
   }, [loaded]);
 
   useEffect(() => {
-    if (!loading) {
+    if (!loading && loaded) {
       if (user) {
         router.replace("/(tabs)/dashboard");
       } else {
         router.replace("/(auth)/login");
       }
     }
-  }, [user, loading]);
+  }, [user, loading, loaded]);
 
   if (!loaded || loading) {
     return null;
@@ -46,11 +49,15 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <ThemeProvider value={colorScheme === "dark" ? DarkTheme : DefaultTheme}>
+      <ThemeProvider value={DefaultTheme}>
         <SystemBars style="auto" />
-        <Stack>
+        <Stack screenOptions={{ headerShown: false }}>
           <Stack.Screen name="(auth)" options={{ headerShown: false }} />
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="(index)" options={{ headerShown: false }} />
+          <Stack.Screen name="modal" options={{ presentation: 'modal' }} />
+          <Stack.Screen name="formsheet" options={{ presentation: 'formSheet' }} />
+          <Stack.Screen name="transparent-modal" options={{ presentation: 'transparentModal' }} />
         </Stack>
         <StatusBar style="auto" />
       </ThemeProvider>

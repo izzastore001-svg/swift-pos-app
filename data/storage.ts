@@ -1,6 +1,6 @@
 
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { User, Product, Transaction, Customer, Store } from '../types';
+import { User, Product, Transaction, Customer, Store, CartItem } from '../types';
 
 const STORAGE_KEYS = {
   USERS: '@pos_users',
@@ -108,7 +108,7 @@ export class Storage {
     }
   }
 
-  static async getCart(): Promise<any[]> {
+  static async getCart(): Promise<CartItem[]> {
     try {
       const data = await AsyncStorage.getItem(STORAGE_KEYS.CART);
       return data ? JSON.parse(data) : [];
@@ -118,7 +118,7 @@ export class Storage {
     }
   }
 
-  static async saveCart(cart: any[]): Promise<void> {
+  static async saveCart(cart: CartItem[]): Promise<void> {
     try {
       await AsyncStorage.setItem(STORAGE_KEYS.CART, JSON.stringify(cart));
     } catch (error) {
@@ -131,6 +131,33 @@ export class Storage {
       await AsyncStorage.removeItem(STORAGE_KEYS.CART);
     } catch (error) {
       console.log('Error clearing cart:', error);
+    }
+  }
+
+  static async getStores(): Promise<Store[]> {
+    try {
+      const data = await AsyncStorage.getItem(STORAGE_KEYS.STORES);
+      return data ? JSON.parse(data) : [];
+    } catch (error) {
+      console.log('Error getting stores:', error);
+      return [];
+    }
+  }
+
+  static async saveStores(stores: Store[]): Promise<void> {
+    try {
+      await AsyncStorage.setItem(STORAGE_KEYS.STORES, JSON.stringify(stores));
+    } catch (error) {
+      console.log('Error saving stores:', error);
+    }
+  }
+
+  static async clearAllData(): Promise<void> {
+    try {
+      const keys = Object.values(STORAGE_KEYS);
+      await AsyncStorage.multiRemove(keys);
+    } catch (error) {
+      console.log('Error clearing all data:', error);
     }
   }
 }

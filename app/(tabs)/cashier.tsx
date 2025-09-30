@@ -10,6 +10,7 @@ import {
   Modal,
   TouchableOpacity,
   FlatList,
+  Dimensions,
 } from 'react-native';
 import { Stack } from 'expo-router';
 import { Button } from '@/components/button';
@@ -21,16 +22,20 @@ import { Transaction, CartItem } from '../../types';
 import { colors } from '../../styles/commonStyles';
 import uuid from 'react-native-uuid';
 
+const { width } = Dimensions.get('window');
+const isTablet = width > 768;
+
 export default function CashierScreen() {
   const { user } = useAuth();
-  const { products, searchProducts, getProductByBarcode } = useProducts();
-  const { cart, addToCart, updateQuantity, removeFromCart, clearCart, getCartTotal } = useCart();
+  const { products, searchProducts, getProductByBarcode, loading: productsLoading } = useProducts();
+  const { cart, addToCart, updateQuantity, removeFromCart, clearCart, getCartTotal, loading: cartLoading } = useCart();
   
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState(products);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
   const [amountPaid, setAmountPaid] = useState('');
   const [paymentMethod, setPaymentMethod] = useState<'cash' | 'non-cash' | 'qris' | 'credit'>('cash');
+  const [processing, setProcessing] = useState(false);
 
   useEffect(() => {
     if (searchQuery.trim()) {
@@ -87,6 +92,7 @@ export default function CashierScreen() {
       return;
     }
 
+    setProcessing(true);
     try {
       const transaction: Transaction = {
         id: uuid.v4() as string,
@@ -135,6 +141,8 @@ export default function CashierScreen() {
     } catch (error) {
       console.log('Error processing payment:', error);
       Alert.alert('Error', 'Terjadi kesalahan saat memproses pembayaran');
+    } finally {
+      setProcessing(false);
     }
   };
 
@@ -144,7 +152,7 @@ export default function CashierScreen() {
       onPress={() => handleAddToCart(item.id)}
     >
       <View style={styles.productInfo}>
-        <Text style={styles.productName}>{item.name}</Text>
+        <Text style={styles.productName} numberOfLines={2}>{item.name}</Text>
         <Text style={styles.productCategory}>{item.category}</Text>
         <Text style={styles.productPrice}>{formatCurrency(item.price)}</Text>
       </View>
@@ -162,7 +170,7 @@ export default function CashierScreen() {
   const CartItem = ({ item }: { item: CartItem }) => (
     <View style={styles.cartItem}>
       <View style={styles.cartItemInfo}>
-        <Text style={styles.cartItemName}>{item.product.name}</Text>
+        <Text style={styles.cartItemName} numberOfLines={2}>{item.product.name}</Text>
         <Text style={styles.cartItemPrice}>{formatCurrency(item.product.price)}</Text>
       </View>
       <View style={styles.cartItemControls}>
@@ -188,6 +196,14 @@ export default function CashierScreen() {
       </View>
     </View>
   );
+
+  if (productsLoading || cartLoading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text style={styles.loadingText}>Memuat data...</Text>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -216,8 +232,8 @@ export default function CashierScreen() {
         </Button>
       </View>
 
-      <View style={styles.content}>
-        <View style={styles.productsSection}>
+      <View style={[styles.content, isTablet && styles.contentTablet]}>
+        <View style={[styles.productsSection, isTablet && styles.productsSectionTablet]}>
           <Text style={styles.sectionTitle}>Produk</Text>
           <FlatList
             data={searchResults}
@@ -225,10 +241,12 @@ export default function CashierScreen() {
             keyExtractor={(item) => item.id}
             style={styles.productsList}
             showsVerticalScrollIndicator={false}
+            numColumns={isTablet ? 2 : 1}
+            key={isTablet ? 'tablet' : 'phone'}
           />
         </View>
 
-        <View style={styles.cartSection}>
+        <View style={[styles.cartSection, isTablet && styles.cartSectionTablet]}>
           <Text style={styles.sectionTitle}>
             Keranjang ({cart.length} item)
           </Text>
@@ -326,12 +344,14 @@ export default function CashierScreen() {
                 variant="secondary"
                 onPress={() => setShowPaymentModal(false)}
                 style={styles.modalButton}
+                disabled={processing}
               >
                 Batal
               </Button>
               <Button
                 onPress={processPayment}
                 style={styles.modalButton}
+                loading={processing}
               >
                 Proses
               </Button>
@@ -347,6 +367,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.background,
+  },
+  loadingText: {
+    fontSize: 16,
+    color: colors.grey,
   },
   searchSection: {
     flexDirection: 'row',
@@ -368,16 +398,29 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
+    flexDirection: 'column',
+  },
+  contentTablet: {
     flexDirection: 'row',
   },
   productsSection: {
     flex: 1,
     padding: 16,
   },
+  productsSectionTablet: {
+    flex: 2,
+  },
   cartSection: {
-    width: 300,
     backgroundColor: colors.backgroundAlt,
     padding: 16,
+    borderTopWidth: 1,
+    borderTopColor: colors.grey + '30',
+    maxHeight: '50%',
+  },
+  cartSectionTablet: {
+    width: 350,
+    maxHeight: 'none',
+    borderTopWidth: 0,
     borderLeftWidth: 1,
     borderLeftColor: colors.grey + '30',
   },
@@ -395,9 +438,11 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 12,
     marginBottom: 8,
+    marginRight: isTablet ? 8 : 0,
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
+    flex: isTablet ? 1 : undefined,
   },
   productInfo: {
     flex: 1,

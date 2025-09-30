@@ -4,7 +4,7 @@ import uuid from 'react-native-uuid';
 
 export const sampleUsers: User[] = [
   {
-    id: uuid.v4() as string,
+    id: 'owner-001',
     name: 'Admin Owner',
     phone: '081234567890',
     role: 'owner',
@@ -12,7 +12,7 @@ export const sampleUsers: User[] = [
     createdAt: new Date().toISOString(),
   },
   {
-    id: uuid.v4() as string,
+    id: 'cashier-001',
     name: 'Kasir 1',
     phone: '081234567891',
     role: 'cashier',
@@ -23,7 +23,7 @@ export const sampleUsers: User[] = [
 
 export const sampleProducts: Product[] = [
   {
-    id: uuid.v4() as string,
+    id: 'product-001',
     name: 'Indomie Goreng',
     category: 'Makanan',
     barcode: '8992388101015',
@@ -34,10 +34,10 @@ export const sampleProducts: Product[] = [
     description: 'Mie instan rasa ayam bawang',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
-    createdBy: sampleUsers[0].id,
+    createdBy: 'owner-001',
   },
   {
-    id: uuid.v4() as string,
+    id: 'product-002',
     name: 'Aqua 600ml',
     category: 'Minuman',
     barcode: '8992775001011',
@@ -48,10 +48,10 @@ export const sampleProducts: Product[] = [
     description: 'Air mineral dalam kemasan',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
-    createdBy: sampleUsers[0].id,
+    createdBy: 'owner-001',
   },
   {
-    id: uuid.v4() as string,
+    id: 'product-003',
     name: 'Beras Premium 5kg',
     category: 'Sembako',
     barcode: '8992388201016',
@@ -62,10 +62,10 @@ export const sampleProducts: Product[] = [
     description: 'Beras premium kualitas terbaik',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
-    createdBy: sampleUsers[0].id,
+    createdBy: 'owner-001',
   },
   {
-    id: uuid.v4() as string,
+    id: 'product-004',
     name: 'Teh Botol Sosro',
     category: 'Minuman',
     barcode: '8992775002012',
@@ -76,10 +76,10 @@ export const sampleProducts: Product[] = [
     description: 'Teh dalam kemasan botol',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
-    createdBy: sampleUsers[0].id,
+    createdBy: 'owner-001',
   },
   {
-    id: uuid.v4() as string,
+    id: 'product-005',
     name: 'Sabun Mandi Lifebuoy',
     category: 'Kebersihan',
     barcode: '8992388301017',
@@ -90,13 +90,13 @@ export const sampleProducts: Product[] = [
     description: 'Sabun mandi antibakteri',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
-    createdBy: sampleUsers[0].id,
+    createdBy: 'owner-001',
   },
 ];
 
 export const sampleCustomers: Customer[] = [
   {
-    id: uuid.v4() as string,
+    id: 'customer-001',
     name: 'Budi Santoso',
     phone: '081234567892',
     points: 150,
@@ -104,7 +104,7 @@ export const sampleCustomers: Customer[] = [
     createdAt: new Date().toISOString(),
   },
   {
-    id: uuid.v4() as string,
+    id: 'customer-002',
     name: 'Siti Aminah',
     phone: '081234567893',
     points: 200,

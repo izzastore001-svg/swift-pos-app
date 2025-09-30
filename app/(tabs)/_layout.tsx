@@ -12,7 +12,7 @@ export default function TabLayout() {
     <Tabs
       screenOptions={{
         tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.grey,
+        tabBarInactiveTintColor: colors.text,
         tabBarStyle: {
           backgroundColor: colors.backgroundAlt,
           borderTopColor: colors.grey + '30',
@@ -38,7 +38,7 @@ export default function TabLayout() {
         options={{
           title: 'Dashboard',
           tabBarIcon: ({ color }) => (
-            <IconSymbol name="chart.bar.fill" size={24} color={color} />
+            <IconSymbol name="chart.bar.fill" size={24} color={color || colors.text} />
           ),
         }}
       />
@@ -48,7 +48,7 @@ export default function TabLayout() {
         options={{
           title: 'Kasir',
           tabBarIcon: ({ color }) => (
-            <IconSymbol name="creditcard.fill" size={24} color={color} />
+            <IconSymbol name="creditcard.fill" size={24} color={color || colors.text} />
           ),
         }}
       />
@@ -58,7 +58,7 @@ export default function TabLayout() {
         options={{
           title: 'Produk',
           tabBarIcon: ({ color }) => (
-            <IconSymbol name="cube.box.fill" size={24} color={color} />
+            <IconSymbol name="cube.box.fill" size={24} color={color || colors.text} />
           ),
           href: isOwner ? '/products' : null,
         }}
@@ -69,7 +69,7 @@ export default function TabLayout() {
         options={{
           title: 'Laporan',
           tabBarIcon: ({ color }) => (
-            <IconSymbol name="doc.text.fill" size={24} color={color} />
+            <IconSymbol name="doc.text.fill" size={24} color={color || colors.text} />
           ),
           href: isOwner ? '/reports' : null,
         }}
@@ -80,7 +80,7 @@ export default function TabLayout() {
         options={{
           title: 'Pengaturan',
           tabBarIcon: ({ color }) => (
-            <IconSymbol name="gearshape.fill" size={24} color={color} />
+            <IconSymbol name="gearshape.fill" size={24} color={color || colors.text} />
           ),
         }}
       />

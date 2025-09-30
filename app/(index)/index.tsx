@@ -1,6 +1,6 @@
 
 import React, { useEffect } from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, ActivityIndicator } from 'react-native';
 import { router } from 'expo-router';
 import { useAuth } from '../../hooks/useAuth';
 import { colors } from '../../styles/commonStyles';
@@ -22,6 +22,11 @@ export default function IndexScreen() {
     <View style={styles.container}>
       <Text style={styles.loadingText}>🏪 POS System</Text>
       <Text style={styles.subtitle}>Memuat aplikasi...</Text>
+      <ActivityIndicator 
+        size="large" 
+        color={colors.primary} 
+        style={styles.loader}
+      />
     </View>
   );
 }
@@ -42,5 +47,9 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 16,
     color: colors.grey,
+    marginBottom: 24,
+  },
+  loader: {
+    marginTop: 20,
   },
 });
